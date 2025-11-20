@@ -33,8 +33,6 @@ public class StatementPrinter {
         final StringBuilder result = new StringBuilder(
                 "Statement for " + invoice.getCustomer() + System.lineSeparator());
 
-        final NumberFormat frmt = NumberFormat.getCurrencyInstance(Locale.US);
-
         for (Performance p : invoice.getPerformances()) {
             final Play play = plays.get(p.getPlayID());
 
@@ -44,15 +42,34 @@ public class StatementPrinter {
             volumeCredits += getVolumeCredits(p, play);
 
             // print line for this order
-            result.append(String.format(
-                    "  %s: %s (%s seats)%n", play.getName(), frmt.format(
-                            rslt / CENTS_IN_A_DOLLAR), p.getAudience()));
+            appendPerformanceLine(result, play, rslt, p.getAudience());
             totalAmount += rslt;
         }
-        result.append(String.format("Amount owed is %s%n", frmt.format(totalAmount / CENTS_IN_A_DOLLAR)));
+        extracted(result, totalAmount);
         result.append(String.format("You earned %s credits%n", volumeCredits));
         return result.toString();
     }
+
+    private static void extracted(StringBuilder result, int totalAmount) {
+        extracted(result, String.format("Amount owed is %s%n", NumberFormat.getCurrencyInstance(Locale.US).format(
+                totalAmount / CENTS_IN_A_DOLLAR)));
+    }
+
+    private static void extracted(StringBuilder result, String usd) {
+        result.append(usd);
+    }
+
+    private static void appendPerformanceLine(StringBuilder result,
+                                              Play play,
+                                              int amount,
+                                              int audience) {
+        result.append(String.format(
+                "  %s: %s (%s seats)%n",
+                play.getName(),
+                NumberFormat.getCurrencyInstance(Locale.US).format(amount / CENTS_IN_A_DOLLAR),
+                audience));
+    }
+
 
     private static int getVolumeCredits(Performance performance, Play play) {
         int result = 0;
