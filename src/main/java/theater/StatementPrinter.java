@@ -33,7 +33,7 @@ public class StatementPrinter {
         for (Performance p : invoice.getPerformances()) {
             final Play play = plays.get(p.getPlayID());
             final int rslt = getAmount(p);
-            appendPerformanceLine(result, play, rslt, p.getAudience());
+            usd(result, play, rslt, p.getAudience());
         }
 
         extracted(result, getTotalAmount());
@@ -82,7 +82,7 @@ public class StatementPrinter {
         result.append(usd);
     }
 
-    private static void appendPerformanceLine(StringBuilder result,
+    private static void usd(StringBuilder result,
                                               Play play,
                                               int amount,
                                               int audience) {
