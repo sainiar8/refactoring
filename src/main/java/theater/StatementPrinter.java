@@ -32,7 +32,7 @@ public class StatementPrinter {
 
         for (Performance p : invoice.getPerformances()) {
             final Play play = plays.get(p.getPlayID());
-            final int rslt = getThisAmount(p);
+            final int rslt = getAmount(p);
             appendPerformanceLine(result, play, rslt, p.getAudience());
         }
 
@@ -41,16 +41,30 @@ public class StatementPrinter {
         return result.toString();
     }
 
-    private int getTotalAmount() {
+    /**
+     * Computes the total amount owed for all performances in the invoice.
+     * Iterates through each performance, calculates its cost, and accumulates
+     * the sum into a single total.
+     *
+     * @return the total amount owed, in cents
+     */
+    public int getTotalAmount() {
         int totalAmount = 0;
         for (Performance p : invoice.getPerformances()) {
-            final int rslt = getThisAmount(p);
+            final int rslt = getAmount(p);
             totalAmount += rslt;
         }
         return totalAmount;
     }
 
-    private int getTotalVolumeCredits() {
+    /**
+     * Computes the total volume credits earned for all performances in the invoice.
+     * Iterates through each performance, determines the credits for each, and
+     * accumulates them into a single total.
+     *
+     * @return the total volume credits
+     */
+    public int getTotalVolumeCredits() {
         int volumeCredits = 0;
         for (Performance p : invoice.getPerformances()) {
             final Play play = getPlay(p);
@@ -89,7 +103,7 @@ public class StatementPrinter {
         return result;
     }
 
-    private static int getThisAmount(Performance performance) {
+    private static int getAmount(Performance performance) {
         int thisAmount = 0;
         final Play play = getPlay(performance);
         switch (play.getType()) {
